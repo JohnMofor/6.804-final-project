@@ -417,11 +417,11 @@ String.prototype.hashCode = function(){
 }
 function setHash(){
 	hash = new String(Date.now());
-	document.getElementById("hash").innerHTML = hash;
+	hash = hash.hashCode();
 }
 function getGuessAnswer(index){
 	var s = new String(document.getElementById("scenario").innerHTML);
-	var req = "http://mj-server.mit.edu:8000/play/get/?id="+hash+"&scenario="+s+"&index="+index
+	var req = "http://mj-server.mit.edu/play/get/?id="+hash+"&scenario="+s+"&index="+index
 	return httpGet(req);
 
 }
@@ -429,6 +429,7 @@ function getGuessAnswer(index){
 function play(guess){
 	var count = parseInt(document.getElementById("round").innerHTML)
 	document.getElementById("round").innerHTML = count+1>=21?21:count+1;
+	if (count===21) return
 	var ans = ans = getGuessAnswer(count-1);
 	document.getElementById("scoreTable").rows[1].cells[count].innerHTML = guess;
 	document.getElementById("scoreTable").rows[2].cells[count].innerHTML = ans;
@@ -453,7 +454,7 @@ function loadNextScenario(){
 
 window.onload = function(){
    setHash();
-   httpGet("http://mj-server.mit.edu:8000/play/create/?id="+hash)
+   httpGet("http://mj-server.mit.edu/play/create/?id="+hash)
 };
 
 

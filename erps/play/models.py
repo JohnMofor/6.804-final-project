@@ -15,15 +15,15 @@ table = {
     }
 }
 
-def step(start):
-    if start=="N":
+def step(group):
+    if group=="N":
         return ["R","P","S"][random.randint(0,2)]
 
     r = random.randint(1,100)
-    if 1 <= r <= table["step"][start]:
-        return start
+    if 1 <= r <= table["step"][group]:
+        return group
     else:
-        return [i for i in ["R","P","S"] if i!=start][random.randint(0,1)]
+        return [i for i in ["R","P","S"] if i!=group][random.randint(0,1)]
 
 
 def switch(start):
@@ -76,12 +76,11 @@ class Player(models.Model):
 
     def build_scenarios(self):
         for start in table["switch"]["order"]:
-            s = start if start!="N" else ["R","P","S"][random.randint(0,2)]
-            sequence = [s]
+            sequence = [step(start)]
             group = [start]
             for i in xrange(19):
                 group.append(switch(group[-1]))
-                sequence.append(step(sequence[-1]))
+                sequence.append(step(group[-2]))
             scenario = ",".join(["".join(sequence),"".join(group)])
             self.add_scenario(scenario)
 
